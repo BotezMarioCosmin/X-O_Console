@@ -3,10 +3,34 @@
 #include <list>
 #include <cstdlib> //random
 #include <limits> //key
-#include <ctime> 
+#include <ctime> //random
+#include <fstream> //file w/r
 
 using namespace std;
 
+void SalvaStatistiche(int vittorieComputer, int vittorieUtente, int parita) {
+    ofstream file("statistiche.txt");
+    if (file.is_open()) {
+        file << vittorieComputer << " " << vittorieUtente << " " << parita;
+        file.close();
+    }
+    else {
+        cout << "Impossibile salvare le statistiche su file." << endl;
+    }
+}
+
+void CaricaStatistiche(int& vittorieComputer, int& vittorieUtente, int& parita) {
+    ifstream file("statistiche.txt");
+    if (file.is_open()) {
+        file >> vittorieComputer >> vittorieUtente >> parita;
+        file.close();
+    }
+    else {
+        vittorieComputer = 0;
+        vittorieUtente = 0;
+        parita = 0;
+    }
+}
 
 class Griglia {
 private: string simboli[9] 
@@ -136,7 +160,9 @@ public:
 ////////////////////////////////  MAIN  ///////////////////////////////////////////////
 int main()
 {
-    int vittorieComputer = 0, vittorieUtente = 0, parita = 0;
+    int vittorieComputer, vittorieUtente, parita;
+    CaricaStatistiche(vittorieComputer, vittorieUtente, parita);
+
     while (true)
     {
         int scelta;
@@ -165,6 +191,7 @@ int main()
                     cout << "\nIl computer ha vinto!\n";
                     cout << "Premi un tasto per continuare...";
                     vittorieComputer++;
+                    SalvaStatistiche(vittorieComputer, vittorieUtente, parita);
                     break;
                 }
 
@@ -192,6 +219,7 @@ int main()
                         cout << "\nHAI VINTO!\n";
                         cout << "Premi un tasto per continuare...";
                         vittorieUtente++;
+                        SalvaStatistiche(vittorieComputer, vittorieUtente, parita);
                         break;
                     }
                     else if (g.TuttoPieno())
@@ -201,6 +229,7 @@ int main()
                         cout << "\nPARI!\n";
                         cout << "Premi un tasto per continuare...";
                         parita++;
+                        SalvaStatistiche(vittorieComputer, vittorieUtente, parita);
                         break;
                     }
 
@@ -214,8 +243,8 @@ int main()
             break;
         case 2:
             system("CLS");
-            cout << "Totale partite: "<<vittorieComputer+vittorieUtente+parita;
-            cout << "\nVittorie utente: " << vittorieUtente;
+            cout << "Totale partite: "<<(vittorieComputer+vittorieUtente+parita);
+            cout << "\nVittorie Utente: " << vittorieUtente;
             cout << "\nVittorie Computer: " << vittorieComputer;
             cout << "\nParita': " << parita;
             cout << "\nPremi un tasto per tornare indietro.";
