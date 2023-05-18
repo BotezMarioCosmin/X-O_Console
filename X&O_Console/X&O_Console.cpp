@@ -243,8 +243,10 @@ int main()
             break;
         case 2:
             system("CLS");
-            cout << "Totale partite: "<<(vittorieComputer+vittorieUtente+parita);
-            cout << "\nVittorie Utente: " << vittorieUtente;
+            int tot = vittorieUtente + vittorieComputer + parita;
+            int perc = 100 * vittorieUtente / tot;
+            cout << "Totale partite: "<<(tot);
+            cout << "\nVittorie Utente: " << vittorieUtente << " (" << perc << "%)";
             cout << "\nVittorie Computer: " << vittorieComputer;
             cout << "\nParita': " << parita;
             cout << "\nPremi un tasto per tornare indietro.";
