@@ -3,12 +3,14 @@
 #include <list>
 #include <cstdlib> //random
 #include <limits> //key
+#include <ctime> 
 
 using namespace std;
 
 
 class Griglia {
-private: string simboli[9] = { " "," "," ", " ", " ", " ", " ", " ", " " };
+private: string simboli[9] 
+           = { " "," "," ", " ", " ", " ", " ", " ", " " };
        string coordinate[9]
            = { "A1", "B1", "C1", "A2", "B2", "C2", "A3", "B3", "C3"};
        string coordinate2[9]
@@ -44,7 +46,7 @@ public:
     {
         for (int i = 0; i < 9; i++)
         {
-            if (coor == coordinate[i] || coor == coordinate2[i] && simboli[i] == " ")
+            if ((coor == coordinate[i] || coor == coordinate2[i]) && simboli[i] == " ")
             {
                 simboli[i] = simb;
                 return;
@@ -78,9 +80,9 @@ public:
         int min = 0;  // Valore minimo
         int max = 8;  // Valore massimo
 
-        while (0 < 1)
+        while (true)
         {
-            int random = min + rand() % max - min + 1;
+            int random = min + rand() % (max - min + 1);
             if (simboli[random] == " ")
             {
                 AggiungiSimbolo("O", coordinate[random]);
@@ -92,59 +94,140 @@ public:
     {
         for (int i = 0; i < 9; i++)
         {
-            if (c == coordinate[i] || c == coordinate2[i] && simboli[i] == " ")
+            if ((c == coordinate[i] || c == coordinate2[i]) && simboli[i] == " ")
             {
                 return true;
             }
         }
         return false;
     }
+    string ControllaVittoria(string symbol) 
+    {
+        if (simboli[0] == symbol && simboli[1] == symbol && simboli[2] == symbol) {
+            return symbol;
+        }
+        else if (simboli[3] == symbol && simboli[4] == symbol && simboli[5] == symbol) {
+            return symbol;
+        }
+        else if (simboli[6] == symbol && simboli[7] == symbol && simboli[8] == symbol) {
+            return symbol;
+        }
+        else if (simboli[0] == symbol && simboli[3] == symbol && simboli[6] == symbol) {
+            return symbol;
+        }
+        else if (simboli[1] == symbol && simboli[4] == symbol && simboli[7] == symbol) {
+            return symbol;
+        }
+        else if (simboli[2] == symbol && simboli[5] == symbol && simboli[8] == symbol) {
+            return symbol;
+        }
+        else if (simboli[0] == symbol && simboli[4] == symbol && simboli[8] == symbol) {
+            return symbol;
+        }
+        else if (simboli[2] == symbol && simboli[4] == symbol && simboli[6] == symbol) {
+            return symbol;
+        }
+        else {
+            return "-1";
+        }
+    }
+
 };
 ////////////////////////////////  MAIN  ///////////////////////////////////////////////
 int main()
 {
-    string coordinata;
-
-    string simboli[9] = {" "," "," ", " ", " ", " ", " ", " ", " " };
-
-    Griglia g(simboli);
-
-    cout << "Benvenuto in X&O!\n";
-    cout << "\n";
-
-    for (int i = 0; i < 5; i++)
+    int vittorieComputer = 0, vittorieUtente = 0, parita = 0;
+    while (true)
     {
-        system("CLS");
-        g.Crea();
+        int scelta;
+        cout << "Benvenuto in X&O!\n";
         cout << "\n";
-        cout << "Inserire una coordinata:\n";
-        cin >> coordinata;
+        cout << "Cosa vuoi fare?\n";
+        cout << "\n1. Gioca.";
+        cout << "\n2. Visualizza statistiche di gioco.\n";
+        cin >> scelta;
 
-        if (g.ControllaMossa(coordinata) == false)
-        {
-            cout << "Mossa non valida!";
-            cout << "\n";
-            i--;
-            cout << "Premi un tasto per riprovare...";
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cin.get();
+        string coordinata;
+
+        string simboli[9] = { " "," "," ", " ", " ", " ", " ", " ", " " };
+
+        Griglia g(simboli);
+
+        switch (scelta) {
+        case 1:
+
+            for (int i = 0; i < 5; i++)
+            {
+                if (g.ControllaVittoria("O") != "-1")
+                {
+                    system("CLS");
+                    g.Crea();
+                    cout << "\nIl computer ha vinto!\n";
+                    cout << "Premi un tasto per continuare...";
+                    vittorieComputer++;
+                    break;
+                }
+
+                system("CLS");
+                g.Crea();
+                cout << "\nInserire una coordinata:\n";
+                cin >> coordinata;
+
+                if (!g.ControllaMossa(coordinata))
+                {
+                    cout << "Mossa non valida!\n";
+                    i--;
+                    cout << "Premi un tasto per riprovare...";
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cin.get();
+                }
+                else
+                {
+                    g.AggiungiSimbolo("X", coordinata);
+
+                    if (g.ControllaVittoria("X") != "-1")
+                    {
+                        system("CLS");
+                        g.Crea();
+                        cout << "\nHAI VINTO!\n";
+                        cout << "Premi un tasto per continuare...";
+                        vittorieUtente++;
+                        break;
+                    }
+                    else if (g.TuttoPieno())
+                    {
+                        system("CLS");
+                        g.Crea();
+                        cout << "\nPARI!\n";
+                        cout << "Premi un tasto per continuare...";
+                        parita++;
+                        break;
+                    }
+
+                    g.MossaComputer();
+                    system("CLS");
+                    g.Crea();
+                    cout << "\nHai inserito: " + coordinata + "\n";
+                    cout << "Premi un tasto per continuare...";
+                }
+            }
+            break;
+        case 2:
+            system("CLS");
+            cout << "Totale partite: "<<vittorieComputer+vittorieUtente+parita;
+            cout << "\nVittorie utente: " << vittorieUtente;
+            cout << "\nVittorie Computer: " << vittorieComputer;
+            cout << "\nParita': " << parita;
+            cout << "\nPremi un tasto per tornare indietro.";
+            break;
         }
-        else
-        {
-            cout << "Hai inserito: " + coordinata;
-            cout << "\n";
-            g.AggiungiSimbolo("X", coordinata);
-            g.MossaComputer();
-            cout << "Premi un tasto per continuare...";
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cin.get();
-        }
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get();
+        system("CLS");
 
     }
 
+
+    return 0;
 }
-
-
-
-
-
