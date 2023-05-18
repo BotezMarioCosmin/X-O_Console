@@ -172,6 +172,10 @@ int main()
         cout << "\n1. Gioca.";
         cout << "\n2. Visualizza statistiche di gioco.\n";
         cin >> scelta;
+        if (scelta != 1 || scelta != 2)
+        {
+            cout << "Scelta non valida! (Premi un tasto per riprovare)";
+        }
 
         string coordinata;
 
@@ -250,7 +254,7 @@ int main()
             cout << "\nVittorie Computer: " << vittorieComputer;
             cout << "\nParita': " << parita;
             cout << "\nPremi un tasto per tornare indietro.";
-            break;
+            break;        
         }
 
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
