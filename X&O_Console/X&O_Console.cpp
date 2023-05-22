@@ -307,6 +307,9 @@ int main()
             if (sino == "S" || sino == "s")
             {
                 EliminaStatistiche();
+                vittorieComputer = 0;
+                vittorieUtente = 0;
+                parita = 0;
             }
             else if (sino == "N" || sino == "n")
             {
